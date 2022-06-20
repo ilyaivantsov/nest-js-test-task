@@ -3,7 +3,7 @@
 const sql = `
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE SCHEMA __fill_tmp;
+CREATE SCHEMA IF NOT EXISTS __fill_tmp;
 
 CREATE OR REPLACE FUNCTION __fill_tmp.RandomUser() RETURNS public.User AS
 $$
@@ -34,14 +34,18 @@ FROM unnest(ARRAY(
         SELECT __fill_tmp.RandomUser()
         FROM generate_series(1, 100)
     ));
+
+INSERT INTO public.User VALUES (uuid_generate_v4(), 'test@example.com', 'password', 'Test', now(), now(), null);
+
+DROP SCHEMA __fill_tmp CASCADE;
 `;
 
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     return queryInterface.sequelize.query(sql);
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     /**
      * Add commands to revert seed here.
      *

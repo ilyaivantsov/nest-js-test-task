@@ -3,7 +3,7 @@ import { User } from '../entities/user.entity';
 
 export class UserDto {
     @ApiProperty()
-    id: string;
+    readonly id: string;
 
     @ApiProperty()
     readonly email: string;
@@ -11,8 +11,8 @@ export class UserDto {
     @ApiProperty()
     readonly name: string;
 
-    constructor(user: User) {
-        // this.id = user.id;
+    public constructor(user: User) {
+        this.id = user.id;
         this.email = user.email;
         this.name = user.name;
     }
