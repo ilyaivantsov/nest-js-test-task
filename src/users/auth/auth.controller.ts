@@ -10,9 +10,12 @@ export class AuthController {
 
     constructor(private authService: AuthService) { }
 
-    @Post('email')
+    /**
+     * Получить токен можно с помощью `email` или `phone`
+     */
+    @Post('login')
     async login(@Body() dto: LoginDto) {
-        const credential = await this.authService.loginByEmail(dto);
+        const credential = await this.authService.login(dto);
         if (!credential)
             throw new BadRequestException('Invalid credentials');
         return credential;

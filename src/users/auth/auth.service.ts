@@ -11,8 +11,11 @@ export class AuthService {
         private readonly userService: UsersService,
     ) { }
 
-    async loginByEmail(dto: LoginDto): Promise<{ jwt: string }> {
-        const user = await this.userService.getUserByEmail(dto.email, dto.password);
+    async login(dto: LoginDto): Promise<{ jwt: string }> {
+        const user = dto.email ?
+            await this.userService.getUserByEmail(dto.email, dto.password)
+            :
+            await this.userService.getUserByPhone(dto.phone, dto.password);
         if (!user)
             return null;
         return { jwt: this.generateToken({ id: user.id }) };
