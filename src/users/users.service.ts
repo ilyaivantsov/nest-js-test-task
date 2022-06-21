@@ -14,7 +14,8 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<UserDto> {
     const user = User.build(createUserDto);
-    return user.save();
+    await user.save();
+    return new UserDto(user);
   }
 
   async findAll(): Promise<UserDto[]> {
@@ -24,7 +25,7 @@ export class UsersService {
 
   async findOne(id: string): Promise<UserDto> {
     const user = await this.usersRepository.findByPk<User>(id);
-    return user;
+    return user ? new UserDto(user) : null;
   }
 
   async getUserByEmail(email: string, password?: string): Promise<UserDto> {
@@ -34,11 +35,21 @@ export class UsersService {
     return user ? new UserDto(user) : null;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserDto> {
+    const user = await this.usersRepository.findByPk<User>(id);
+    if (!user)
+      return null;
+    user.set(updateUserDto);
+    await user.save();
+
+    return new UserDto(user);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    const user = await this.usersRepository.findByPk<User>(id);
+    if (!user)
+      return null;
+    await user.destroy();
+    return new UserDto(user);
   }
 }

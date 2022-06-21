@@ -11,4 +11,5 @@ export const databaseConfig: SequelizeOptions = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT as unknown as number,
     dialect: process.env.DB_DIALECT as Dialect,
+    schema: process.env.DB_SCHEMA,
 };
