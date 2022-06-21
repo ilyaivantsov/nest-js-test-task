@@ -57,7 +57,13 @@ export class UsersService {
     if (!user)
       return null;
     user.set(updateUserDto);
-    await user.save();
+
+    await user.save().catch(
+      (e: ValidationError) => {
+        console.error(e.message);
+        return user.reload();
+      }
+    );
 
     return new UserDto(user);
   }
